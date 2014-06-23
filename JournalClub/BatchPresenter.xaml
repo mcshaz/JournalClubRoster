@@ -1,0 +1,38 @@
+﻿<Window x:Class="JournalClub.BatchPresenter"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:userControls="clr-namespace:JournalClub.UserControls"
+        Title="Batch Process Presenters" SizeToContent="WidthAndHeight">
+    <StackPanel Orientation="Horizontal">
+        <userControls:TermDates DataContext="{Binding PicuAttachDates}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <StackPanel Orientation="Vertical">
+            <Label Content="Regular Expression" />
+            <TextBox Text="{Binding UserRegEx}"/>
+            <CheckBox Content="MultiLine" IsChecked="{Binding MultiLine}"/>
+            <Label Content="Free Text" />
+            <TextBox AcceptsReturn="True" Text="{Binding UserMailList}" />
+            <StackPanel Orientation="Horizontal">
+                <Button Content="Test" Margin="5" />
+                <Button Content="Apply" Margin="5" Command="{Binding ApplyRegex}"/>
+            </StackPanel>
+            <Label Content="Result" />
+            <Border BorderBrush="OrangeRed" BorderThickness="2">
+                <TextBlock TextWrapping="Wrap" Text="{Binding TestResult}"/>
+            </Border>
+
+        </StackPanel>
+        <StackPanel Orientation="Vertical">
+            <DataGrid HorizontalAlignment="Left" ItemsSource="{Binding Presenters}" AutoGenerateColumns="False">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Binding="{Binding PresenterName}" Header="Name" />
+                    <DataGridTextColumn Binding="{Binding PresenterWorkEmail}" Header="Work Email"  />
+                    <DataGridTextColumn  Binding="{Binding PresenterPersonalEmail}" Header="Personal Email"  />
+                </DataGrid.Columns>
+            </DataGrid>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="Save" Margin="5" Command="{Binding SaveChanges}"/>
+                <Button Content="Clear" Margin="5" Command="{Binding ClearPresenters}" />
+            </StackPanel>
+        </StackPanel>
+    </StackPanel>
+</Window>

@@ -1,0 +1,31 @@
+﻿<Window x:Class="JournalClub.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:local="clr-namespace:JournalClub" 
+        Title="Journal Club" SizeToContent="WidthAndHeight" mc:Ignorable="d">
+    <Window.Resources>
+        <CollectionViewSource x:Key="teachingSessionViewSource" d:DesignSource="{d:DesignInstance {x:Type local:TeachingSession}, CreateList=True}"/>
+        <DataTemplate x:Key="TeachingDateTemplate">
+            <StackPanel>
+                <TextBlock Text="{Binding Path=SessionDate, StringFormat='d'}"/>
+            </StackPanel>
+        </DataTemplate>
+    </Window.Resources>
+    <DockPanel Background="Wheat" Margin="0,0,2,6">
+        <Grid>
+            <StackPanel Orientation="Vertical" >
+                <Button Content="Articles" Width="144" Margin="5" Click="ArticlesClick"/>
+                <Button Content="Presentations" Width="144" Margin="5" Click="AssignPresentationsClick" />
+                <Expander Header="Advanced">
+                    <StackPanel>
+                        <Button Content="Journal RegEx" Width="144" Margin="5" Click="JournalRegExClick"/>
+                        <Button Content="BatchPresenter RegEx" Width="144" Margin="5" Click="BatchPresenterRegExClick"/>
+                        <Button Content="Create Seeding Data" Width="144" Margin="5" Click="CreateSeedClick"/>
+                    </StackPanel>
+                </Expander>
+            </StackPanel>
+        </Grid>
+    </DockPanel>
+</Window>

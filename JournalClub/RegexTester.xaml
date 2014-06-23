@@ -1,0 +1,39 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:local="clr-namespace:JournalClub" mc:Ignorable="d" x:Class="JournalClub.RegexTester"
+        Title="Regex Tester" Height="480" Width="510" Loaded="Window_Loaded" Closing="Window_Closing" >
+    <Window.Resources>
+        <CollectionViewSource x:Key="journalReferenceRegExpsViewSource" d:DesignSource="{d:DesignInstance {x:Type local:JournalReferenceRegExp}, CreateList=True}"/>
+    </Window.Resources>
+    <Grid x:Name="RegExGrid" DataContext="{StaticResource journalReferenceRegExpsViewSource}">
+        <StackPanel>
+        <Label Content="Regex:" HorizontalAlignment="Left" Height="31" Margin="5,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="ExpName" Text="{Binding ExpName,Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" HorizontalAlignment="Left" Height="52" Margin="5" TextWrapping="Wrap" VerticalAlignment="Top" Width="174"/>
+            <CheckBox IsChecked="{Binding SingleLine}" Content="Single Line" Margin="5" Checked="SingleLine_Checked"/>
+            <DockPanel Width="180" HorizontalAlignment="Left">
+                <Button HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5" Name="nextButton" Height="26" Width="26" Click="nextButton_Click" DockPanel.Dock="Right">&gt;</Button>
+                <Button HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5" Name="backButton" Height="26" Width="26" Click="backButton_Click" DockPanel.Dock="Right">&lt;</Button>
+                <Button Content="New" HorizontalAlignment="Left" Height="26" VerticalAlignment="Top" Width="53" Click="AddRegEx" Margin="5" DockPanel.Dock="Left"/>
+            </DockPanel>
+        </StackPanel>
+        <GroupBox Width="300" HorizontalAlignment="Right">
+            <GroupBox.Header>Tester</GroupBox.Header>
+            <StackPanel>
+                <TextBox x:Name="UserRegex" Height="89" Margin="10" TextWrapping="Wrap" Text="{Binding Regex}" LostFocus="UserRegex_LostFocus" />
+                <Border BorderBrush="Blue" BorderThickness="3" Height="93" Margin="10" >
+                    <TextBox x:Name="TestOn" TextWrapping="Wrap" AcceptsReturn="True" Text="Freedman SB, Adler M, Seshadri R, Powell EC. Oral ondansetron for gastroenteritis in a pediatric emergency department. N Engl J Med. 2006 Apr 20;354(16):1698-705. PubMed PMID: 16625009." Margin="0,0,7,0" LostFocus="TestOn_LostFocus"  />
+                </Border>
+                <Grid>
+                    <Button Content="Try" HorizontalAlignment="Left" Height="26" Width="53" Margin="10,10,0,10"  />
+                    <Button Content="Save" HorizontalAlignment="Left" Height="26" Width="53" Margin="68,10,0,10" Click="AcceptRegExClick"/>
+                </Grid>
+                <Border BorderBrush="Black" BorderThickness="3" Height="143"  Margin="10" >
+                    <ScrollViewer >
+                        <TextBlock HorizontalAlignment="Left" x:Name="Result" TextWrapping="Wrap" />
+                    </ScrollViewer>
+                </Border>
+            </StackPanel>
+        </GroupBox>
+    </Grid>
+</Window>

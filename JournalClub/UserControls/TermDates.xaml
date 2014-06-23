@@ -1,0 +1,42 @@
+﻿<UserControl x:Class="JournalClub.UserControls.TermDates"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             xmlns:local="clr-namespace:JournalClub.ViewModels" >
+    <!--
+    <UserControl.DataContext>
+        <local:TermYearViewModel />
+    </UserControl.DataContext>
+    -->
+    <Border BorderBrush="Aquamarine" Background="AntiqueWhite" BorderThickness="1">
+        <Grid Margin="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="40"/>
+                <ColumnDefinition Width="40"/>
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Label Content="Start" Grid.Row="0" Grid.Column="0" />
+            <DatePicker x:Name="StartDatePicker" SelectedDate="{Binding StartDate}"
+                                                Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2"/>
+            <Label Content="Finish" Grid.Row="1" Grid.Column="0" />
+            <DatePicker x:Name="FinishDatePicker" SelectedDate="{Binding FinishDate}"
+                                                Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2"/>
+            <Label Content="Term" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Center"/>
+            <TextBox x:Name="TermText" Margin="5" Width="40" Grid.Row="3" Grid.Column="0" Text="{Binding TermNumber}" MaxLength="1"/>
+            <Label Content="Of" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center"/>
+            <TextBox x:Name="OfText" Margin="5" Width="40" Grid.Row="3" Grid.Column="1"  Text="{Binding TermsPerYear}" MaxLength="1"/>
+            <Label Content="Year" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Center"/>
+            <TextBox x:Name="YearText" Margin="5" Width="40" Grid.Row="3" Grid.Column="2"  Text="{Binding StartingYear}" MaxLength="4"/>
+            <Button Content="Apply" Grid.Row="4"  Grid.ColumnSpan="2" Margin="5,5" HorizontalAlignment="Left" Command="{Binding ApplyTerm}"/>
+        </Grid>
+    </Border>
+</UserControl>

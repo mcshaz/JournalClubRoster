@@ -1,0 +1,183 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:local="clr-namespace:JournalClub.ViewModels" 
+        xmlns:userControls="clr-namespace:JournalClub.UserControls"
+        mc:Ignorable="d" 
+        x:Class="JournalClub.AssignPresentations"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"   
+        Title="Presentations" Width="630"
+        Language="en-NZ" 
+        SizeToContent="WidthAndHeight">
+    <Window.Resources>
+        <Style x:Key="noHeaderStyle" TargetType="{x:Type GridViewColumnHeader}">
+            <Setter Property="Visibility" Value="Collapsed" />
+        </Style>
+    </Window.Resources>
+    <!--
+    <Window.DataContext>
+        <local:AssignPresentationsViewModel />
+    </Window.DataContext>
+    -->
+    <DockPanel>
+        <StackPanel  DockPanel.Dock="Left" Orientation="Vertical">
+            <userControls:TermDates DataContext="{Binding FormDates}" VerticalAlignment="Top"/>
+        <GroupBox Header="All Presenters" Margin="5,5"  VerticalAlignment="Top">
+            <DockPanel>
+                <ListBox Name="AllPresentersLB" ItemsSource="{Binding Presenters}" DisplayMemberPath="PresenterName"
+                         SelectedItem="{Binding SelectedPresenter}"
+                         DockPanel.Dock="Top">
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="{x:Type ListBoxItem}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=HasPresentations}" Value="false" >
+                                    <Setter Property="Background" Value="Red" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=HasUnassignedPresentations}" Value="true" >
+                                    <Setter Property="Background" Value="Yellow" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                </ListBox>
+                <StackPanel Orientation="Horizontal">
+                        <Button Content="Add" Width="50" Margin="5" Command="{Binding AddPresenter}" />
+                    <Button Content="Remove" Width="50" Margin="5" Command="{Binding RemovePresenter}"/>
+                    </StackPanel>
+                </DockPanel>
+        </GroupBox>
+        </StackPanel>
+        
+        <StackPanel DockPanel.Dock="Right">
+
+        <GroupBox Name="TeachingSessionGB" Header="All Sessions" Margin="5,5" VerticalAlignment="Top">
+            <StackPanel>
+                <ListView x:Name="TeachingSessionList" 
+                          ItemsSource="{Binding TeachingSessions}" 
+                          SelectedItem="{Binding SelectedTeachingSession}" >
+                    <ListView.View>
+                        <GridView ColumnHeaderContainerStyle="{StaticResource noHeaderStyle}">
+                            <GridViewColumn DisplayMemberBinding="{Binding SessionDate, StringFormat=d}"/>
+                            <GridViewColumn DisplayMemberBinding="{Binding PresenterInitials}" Width="30" />
+                        </GridView>
+                    </ListView.View>
+                    <ListView.ItemContainerStyle>
+                        <Style>
+                            <Style.Triggers>
+                                <DataTrigger Binding ="{Binding Path=IsAvailable}" Value="False">
+                                    <Setter Property="ListBoxItem.Foreground" Value="Gray"/>
+                                </DataTrigger>
+                                <DataTrigger Binding ="{Binding Path=IsDuringAttachment}" Value="False">
+                                    <Setter Property="ListBoxItem.Foreground" Value="Red"/>
+                                </DataTrigger>
+                                    <DataTrigger Binding ="{Binding Path=IsSelectedPresenter}" Value="True">
+                                    <Setter Property="ListBoxItem.Background" Value="Yellow"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                </ListView>
+                    <Button Content="Un-Assign" Margin="5,5" Command="{Binding UnAssignPresentation}" 
+                        Width="80" />
+                    <Button Content="Copy Dates" Margin="5,5" Command="{Binding CopyDates}" 
+                        Width="80" />
+                    <Separator />
+                    <DatePicker Margin="5,5,5,0" SelectedDate="{Binding SelectedTeachingSession.SessionDate}" />
+                        <Button Content="Add" Command="{Binding AddSession}" Margin="5,5,5,0" Width="80" />
+                    <Button Content="Remove" Command="{Binding RemoveSession}" Margin="5,5,5,0" Width="80"  />
+                    <Button Content="Add Weekly" Command="{Binding SetAllSessions}" Margin="5,5,5,0" Width="80"  />
+                </StackPanel>
+        </GroupBox>
+            <Button Content="Save Changes" Width="90" Margin="5" Command="{Binding SaveChanges}"/>
+            <Button Content="Email Dates" Width="90" Margin="5" Command="{Binding EmailDates}"/>
+        </StackPanel>
+        
+        <GroupBox Header="Presentations" DockPanel.Dock="Top" Margin="5,5" VerticalAlignment="Top">
+            <DockPanel>
+                <Button Margin="5,25" Content="&lt;--Assign--&gt;" Height="26" DockPanel.Dock="Right" VerticalAlignment="Top" 
+                        HorizontalAlignment="Center" Command="{Binding AssignPresentationToSession}"/>
+                <ListBox x:Name="PresentationLB" ItemsSource="{Binding Presentations}" SelectedItem="{Binding SelectedPresentation}"
+                         ScrollViewer.HorizontalScrollBarVisibility="Disabled" DockPanel.Dock="Top">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Border BorderBrush="Navy" BorderThickness="1" Margin="3" >
+                                    <TextBlock Text="{Binding ArticleTitle}" TextWrapping="Wrap" Width="200" Margin="2"/>
+                                </Border>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+                <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom" VerticalAlignment="Center">
+                    <Button Content="Add" Margin="5" Width="50" Command="{Binding AddPresentation}"/>
+                    <Button Content="Remove" Margin="5" Width="50" Command="{Binding RemovePresentation}"/>
+                </StackPanel>
+            </DockPanel>
+        </GroupBox>
+        <DockPanel DockPanel.Dock="Top" VerticalAlignment="Stretch">
+            <GroupBox Header="Attachments" DockPanel.Dock="Left" VerticalAlignment="Top" Margin="5,5" >
+            <StackPanel>
+                <ListView Name="AttachmentsLB" Width="160" ItemsSource="{Binding PicuAttachments}" 
+                                  SelectedItem="{Binding SelectedPicuAttachment}">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="Start" DisplayMemberBinding="{Binding StartDate, StringFormat=d}" Width="75">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding}" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn Header="Finish" DisplayMemberBinding="{Binding FinishDate, StringFormat=d}" Width="75">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding}" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+                <Expander Header="Modify">
+                        <Expander.Style>
+                            <Style TargetType="Expander">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding SelectedPicuAttachment}" Value="{x:Null}">
+                                        <Setter Property="IsEnabled" Value="False"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Expander.Style>
+                        <userControls:TermDates DataContext="{Binding PicuAttachDates}" />
+                    </Expander>
+                <StackPanel Orientation="Horizontal">
+                    <Button Content="Add" Width="50" Margin="5" 
+                                    Command="{Binding AddAttachment}"/>
+                    <Button Content="Remove" Width="50" Margin="5" 
+                                    Command="{Binding RemoveAttachment}"/>
+                </StackPanel>
+            </StackPanel>
+        </GroupBox>
+            <GroupBox Name="PresenterDetailsGB" Header="Details" DockPanel.Dock="Right" Width="120" HorizontalAlignment="Stretch" Margin="5,5" 
+                      VerticalAlignment="Top" DataContext="{Binding SelectedPresenter}">
+                <DockPanel>
+                    <StackPanel>
+                        <Label Content="Name" />
+                        <TextBox  Text="{Binding PresenterName}" MaxLength="100"/>
+                        <Label Content="Work Email" />
+                        <TextBox Text="{Binding PresenterWorkEmail}" MaxLength="100"/>
+                        <Label Content="Personal Email" />
+                        <TextBox Text="{Binding PresenterPersonalEmail}" MaxLength="100"/>
+                    </StackPanel>
+
+
+                </DockPanel>
+            </GroupBox>
+        </DockPanel>
+
+                
+    </DockPanel>
+</Window>

@@ -1,0 +1,137 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:local="clr-namespace:JournalClub" 
+        xmlns:localVm="clr-namespace:JournalClub.ViewModels" 
+        mc:Ignorable="d" 
+        x:Class="JournalClub.Articles"
+        Title="Articles" SizeToContent="Height" Loaded="Window_Loaded" Closing="Window_Closing" >
+    <Window.Resources>
+        <CollectionViewSource x:Key="articlesViewSource" d:DesignSource="{d:DesignInstance {x:Type local:Article}, CreateList=True}"/>
+        <CollectionViewSource x:Key="articleTypesViewSource" d:DesignSource="{d:DesignInstance {x:Type local:ArticleType}, CreateList=True}"/>
+        <CollectionViewSource x:Key="currentPresentersViewSource" d:DesignSource="{d:DesignInstance {x:Type localVm:PresenterListItem}, CreateList=True}"/>
+        
+        <Style TargetType="DataGridRow">
+            <Setter Property="BorderThickness" Value="2" />
+            <Setter Property="BorderBrush" Value="White" />
+            <Setter Property="Background" Value="Wheat" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Presentation}"  Value="{x:Null}" >
+                    <Setter Property="BorderBrush" Value="Green"/>
+                    <Setter Property="Background" Value="LightYellow"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+    <ScrollViewer Width="Auto" HorizontalScrollBarVisibility="Disabled">
+        <Grid DataContext="{StaticResource articlesViewSource}">
+            <StackPanel >
+                <DataGrid x:Name="articlesDataGrid" AutoGenerateColumns="False" EnableRowVirtualization="True" HeadersVisibility="Column" MaxHeight="650"
+                              ItemsSource="{Binding Path=.,Mode=TwoWay}" RowDetailsVisibilityMode="VisibleWhenSelected" HorizontalScrollBarVisibility="Hidden">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn x:Name="titleColumn" Binding="{Binding Title}" Header="Title" Width="*" >
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="TextWrapping" Value="Wrap" />
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                                <DataGridTextColumn.EditingElementStyle>
+                                    <Style TargetType="TextBox">
+                                    <Setter Property="MaxLength" Value="255" />
+                                    <Setter Property="TextWrapping" Value="Wrap" />
+                                        <Setter Property="AcceptsReturn" Value="true" />
+                                    </Style>
+                                </DataGridTextColumn.EditingElementStyle>
+                            </DataGridTextColumn>
+                            <DataGridComboBoxColumn x:Name="articleTypeIdColumn" 
+                                                    DisplayMemberPath="Description" 
+                                                    SelectedValuePath="Id"
+                                                    SelectedValueBinding="{Binding Path=ArticleTypeId}" 
+                                                    ItemsSource="{Binding Source={StaticResource articleTypesViewSource}}" 
+                                                    Header="Article Type" Width="190"/>
+                            </DataGrid.Columns>
+                        <DataGrid.RowDetailsTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="100"/>
+                                        <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="20"/>
+                                </Grid.ColumnDefinitions>
+
+                                    <TextBlock Text="Journal" Grid.Column="0" Grid.Row="0"/>
+                                    <TextBox x:Name="Journal" Text="{Binding Mode=TwoWay, Path=Journal, NotifyOnSourceUpdated=True, BindsDirectlyToSource=True}" 
+                                             Grid.Column="1" Grid.Row="0" MaxLength="255" TextWrapping="Wrap"/>
+
+                                    <TextBlock Text="Reference" Grid.Column="0" Grid.Row="1"/>
+                                    <TextBox x:Name="Reference" Text="{Binding Mode=TwoWay, Path=Reference, NotifyOnSourceUpdated=True, BindsDirectlyToSource=True}" 
+                                             Grid.Column="1" Grid.Row="1" MaxLength="100" />
+
+                                    <TextBlock Text="Year" Grid.Column="0" Grid.Row="2"/>
+                                    <TextBox x:Name="Year" Text="{Binding Mode=TwoWay, Path=YearPublished, NotifyOnSourceUpdated=True, 
+                                        BindsDirectlyToSource=True}" Grid.Column="1" Grid.Row="2" MaxLength="4"/>
+                                    
+                                    <TextBlock Text="Authors" Grid.Column="0" Grid.Row="3"/>
+                                    <TextBox x:Name="Authors" Text="{Binding Mode=TwoWay, Path=Authors, NotifyOnSourceUpdated=True, 
+                                        BindsDirectlyToSource=True}" Grid.Column="1" Grid.Row="3" MaxLength="255" TextWrapping="Wrap"/>
+                                    
+                                    <TextBlock Text="Presented By" Grid.Column="0" Grid.Row="4"/>
+                                <ComboBox x:Name="Presenter" 
+                                                  ItemsSource="{Binding Source={StaticResource currentPresentersViewSource}}"
+                                                  DisplayMemberPath="PresenterName"
+                                                  SelectedValuePath="Presentation"
+                                                  SelectedValue="{Binding Path=Presentation, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                  Grid.Column="1" Grid.Row="4" SelectionChanged="Presenter_SelectionChanged"
+                                                  IsSynchronizedWithCurrentItem="False">
+                                    <ComboBox.ItemContainerStyle>
+                                        <Style>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding ="{Binding Path=Available}" Value="False">
+                                                    <Setter Property="ComboBoxItem.Focusable" Value="False"/>
+                                                    <Setter Property="ComboBoxItem.IsEnabled" Value="False"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ComboBox.ItemContainerStyle>
+                                </ComboBox>
+
+                                <TextBlock Text="Powerpoint File" Grid.Column="0" Grid.Row="5"/>
+                                    <TextBox x:Name="powerPointLocation" Text="{Binding Mode=TwoWay, Path=PowerPointLocation, NotifyOnSourceUpdated=True, BindsDirectlyToSource=True}" 
+                                             Grid.Column="1" Grid.Row="5" MaxLength="255" TextWrapping="Wrap"/>
+                                <Button Content=".." Grid.Column="2" Grid.Row="5" Click="PowerPointClick" />
+                                    
+                                    <TextBlock Text="Article Location" Grid.Column="0" Grid.Row="6"/>
+                                    <TextBox x:Name="articleLocation" Text="{Binding Mode=TwoWay, Path=ArticleLocation, NotifyOnSourceUpdated=True, BindsDirectlyToSource=True}" 
+                                             Grid.Column="1" Grid.Row="6" MaxLength="255" TextWrapping="Wrap"/>
+                                    <Button Content=".." Grid.Column="2" Grid.Row="6" Click="ArticleLocationClick"/>
+                            </Grid>
+                            </DataTemplate>
+                        </DataGrid.RowDetailsTemplate>
+                    </DataGrid>
+            <StackPanel Orientation="Horizontal" Margin="0,5,0,0" >
+                <Button Content="Add Article" Click="AddArticleClick" Height="30" Width="90" Margin="5"/>
+                <Button Content="Save Changes" Click="SaveChangesClick" Height="30" Width="90" Margin="5"/>
+            </StackPanel>
+            <Separator Margin="0,5" />
+            <Expander Header="Add article as free text">
+                    <StackPanel Orientation="Horizontal" Height="110" >
+                        <TextBox Name="FreeText" AcceptsReturn="True" Width="400" Margin="10"/>
+                        <ListBox Name="RefRegEx" HorizontalAlignment="Left" Width="Auto" DisplayMemberPath="ExpName" Margin="10" SelectionChanged="RefRegEx_SelectionChanged" />
+                        <Button Width="40" Height="30" Content="Add" HorizontalAlignment="Right" Click="AddFreeText" Margin="10"/>
+                    </StackPanel>
+            </Expander>
+        </StackPanel>
+    </Grid>
+    </ScrollViewer>
+</Window>
